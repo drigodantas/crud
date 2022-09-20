@@ -1,0 +1,28 @@
+.new-user {
+  background-color: #3333ff;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  font-weight: bold;
+  height: 3em;
+  margin-bottom: 20px;
+  width: 10em;
+}
+
+.users-table th {
+  background-color: #213435;
+  color: #fff;
+}
+
+.users-table th,
+td {
+  padding: 5px;
+}
+
+.users-table input {
+  margin: 2px;
+}
+
+.users-table tr:nth-child(odd) {
+  background-color: #eaeaea;
+}
