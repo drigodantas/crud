@@ -1,5 +1,5 @@
 const table = document.querySelector(".users-table");
-const form = document.querySelector(".form");
+const form = document.querySelector(".form-new-user");
 const deleteButton = document.querySelector(".delete-button");
 
 const getUsers = async () => {
@@ -52,11 +52,9 @@ form.addEventListener("click", (e) => {
   };
 
   createUser(url, body);
-  const tr = createTr(body);
-  table.appendChild(tr);
 });
 
-async function createUser(url, data) {
+async function createUser(url, user) {
   const response = await fetch(url, {
     method: "POST",
     headers: {
@@ -64,22 +62,17 @@ async function createUser(url, data) {
       Authorization:
         "Bearer ea59334639144498e128e9d3d24ee9f38ddd79f30c9d3d4c8f6e3e4c22ef2623",
     },
-    body: JSON.stringify(data),
+    body: JSON.stringify(user),
   });
+
+  const data = await response.json();
+  const tr = createTr(data);
+  console.log(data, "data");
+  table.appendChild(tr);
   return response.JSON;
 }
 
-// () =>
-//   deleteButton.addEventListener("click", (e) => {
-//     e.preventDefault();
-//     console.log(e.id);
-//     // deleteUser(e.id);
-//   });
-
 async function deleteUser(id) {
-  console.log(id, "id");
-  // const tr = document.querySelector(`#${id}`);
-  // console.log(tr);
   const response = await fetch(`https://gorest.co.in/public/v2/users/${id}`, {
     method: "DELETE",
     headers: {
@@ -116,17 +109,18 @@ async function editUser(id) {
     },
     body: JSON.stringify(editedUser),
   });
+
   changeTr(editedUser);
-  const data = response.json;
+  const data = await response.json();
   console.log(data);
   return data;
 }
 
-function changeTr(body) {
-  console.log(body);
-  const tr = document.getElementById(`${body.id}`).childNodes;
-  tr[1].innerHTML = body.name;
-  tr[2].innerHTML = body.email;
+function changeTr(user) {
+  console.log(user);
+  const tr = document.getElementById(`${user.id}`).childNodes;
+  tr[1].innerHTML = user.name;
+  tr[2].innerHTML = user.email;
 }
 
 showUsers();
