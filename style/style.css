@@ -1,3 +1,9 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
 .new-user {
   background-color: #3333ff;
   border: none;
@@ -5,8 +11,12 @@
   cursor: pointer;
   font-weight: bold;
   height: 3em;
-  margin-bottom: 20px;
+  margin: 20px 5px 20px 5px;
   width: 10em;
+}
+
+.users-table {
+  margin-left: 4px;
 }
 
 .users-table th {
@@ -25,4 +35,90 @@ td {
 
 .users-table tr:nth-child(odd) {
   background-color: #eaeaea;
+}
+
+.modal {
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: none;
+  height: 100%;
+  left: 0;
+  justify-content: center;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1;
+}
+
+.modal.active {
+  display: flex;
+}
+
+.modal-content {
+  background-color: #fff;
+  box-shadow: 4px 5px 5px 1px rgba(0, 0, 0, 0.6);
+  border-radius: 5px;
+  padding: 10px;
+  position: relative;
+  width: 30%;
+}
+
+.close-modal-button {
+  border: none;
+  background-color: #fff;
+  border-radius: 50%;
+  cursor: pointer;
+  margin: 2px;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+.alert-error {
+  background-color: #ffc6c4;
+  padding: 10px;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 2px;
+}
+
+.inactive {
+  display: none;
+}
+
+.modal-form {
+  margin: 10px auto;
+}
+
+.modal-form #name,
+#email {
+  border: 1px solid #000;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  padding: 5px;
+  width: 100%;
+}
+
+.radio-button-gender label:first-child,
+.radio-button-status label:first-child {
+  display: block;
+  font-weight: bold;
+  margin: 5px auto;
+}
+
+@media (max-width: 620px) {
+  .wrapped {
+    display: block;
+  }
+}
+.sendButton {
+  cursor: pointer;
+  display: block;
+  margin-top: 10px;
+  width: 40%;
+}
+
+.action-buttons {
+  cursor: pointer;
+  padding: 3px;
 }

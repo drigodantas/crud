@@ -1,6 +1,8 @@
 (() => {
   const table = document.querySelector(".users-table");
-  const form = document.querySelector(".form-new-user");
+  const modal = document.querySelector(".modal");
+  const formOpenModal = document.querySelector(".form-new-user");
+  const modalForm = document.querySelector(".modal-form");
 
   const getUsers = async () => {
     try {
@@ -8,7 +10,7 @@
       const data = await dataAPI.json();
       return data;
     } catch (err) {
-      alert("Erro ao tentar pegar os dados");
+      showError("Erro ao tentar pegar os dados");
     }
   };
 
@@ -20,7 +22,7 @@
         table.appendChild(tableRow);
       });
     } catch (err) {
-      alert("Erro ao tentar exibir os usuários");
+      showError("Erro ao tentar exibir os usuários");
     }
   };
 
@@ -28,47 +30,40 @@
     const button = document.createElement("button");
     button.innerText = text;
     button.addEventListener("click", callback);
+    button.classList.add("action-buttons");
     return button;
   };
 
-  const createTableRow = (user) => {
-    const tableRow = document.createElement("tr");
-    const tableDataId = document.createElement("td");
-    const tableDataName = document.createElement("td");
-    const tableDataEmail = document.createElement("td");
-    const tableDataButtons = document.createElement("td");
-    const deleteButton = createButton("Excluir", () => deleteUser(user.id));
-    const editButton = createButton("Editar", () => editUser(user.id));
-
-    tableRow.setAttribute("id", user.id);
-    tableRow.appendChild(tableDataId);
-    tableRow.appendChild(tableDataName);
-    tableRow.appendChild(tableDataEmail);
-    tableRow.appendChild(tableDataButtons);
-    tableDataId.innerHTML = user.id;
-    tableDataName.innerHTML = user.name;
-    tableDataEmail.innerHTML = user.email;
-    tableDataButtons.appendChild(editButton);
-    tableDataButtons.appendChild(deleteButton);
-
-    return tableRow;
-  };
-
-  form.addEventListener("click", (e) => {
+  formOpenModal.addEventListener("click", (e) => {
     e.preventDefault();
+    openModal("Criar usuário");
+  });
+
+  modalForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+
+    const name = document.querySelector("#name").value;
+    const email = document.querySelector("#email").value;
+    const gender = document.querySelector('input[name="gender"]:checked').value;
+    const status = document.querySelector('input[name="status"]:checked').value;
+    const title = document.querySelector(".modal-title");
     const url = "https://gorest.co.in/public/v2/users";
-    const name = window.prompt("Name");
-    const email = window.prompt("Email");
-    const gender = window.prompt("Genero");
 
     body = {
       email,
       gender,
       name,
-      status: "active",
+      status,
     };
 
-    createUser(url, body);
+    if (title.innerText === "Criar usuário") {
+      createUser(url, body);
+    } else {
+      const idUser = document.querySelector(".id-user").innerText;
+      editUser(idUser, body);
+    }
+
+    closeModal(e);
   });
 
   const createUser = async (url, user) => {
@@ -84,11 +79,41 @@
       });
 
       const data = await response.json();
+
+      if (response.status >= 400) {
+        throw new Error();
+      }
+
       const tableRow = createTableRow(data);
       table.appendChild(tableRow);
     } catch {
-      alert("Erro ao enviar o novo usuário");
+      showError("Erro ao enviar o novo usuário");
     }
+  };
+
+  const createTableRow = (user) => {
+    const tableRow = document.createElement("tr");
+    const tableDataId = document.createElement("td");
+    const tableDataName = document.createElement("td");
+    const tableDataEmail = document.createElement("td");
+    const tableDataButtons = document.createElement("td");
+    const deleteButton = createButton("Excluir", () => deleteUser(user.id));
+    const editButton = createButton("Editar", () =>
+      openModal("Editar usuário", user.id)
+    );
+
+    tableRow.setAttribute("id", user.id);
+    tableRow.appendChild(tableDataId);
+    tableRow.appendChild(tableDataName);
+    tableRow.appendChild(tableDataEmail);
+    tableRow.appendChild(tableDataButtons);
+    tableDataId.innerHTML = user.id;
+    tableDataName.innerHTML = user.name;
+    tableDataEmail.innerHTML = user.email;
+    tableDataButtons.appendChild(editButton);
+    tableDataButtons.appendChild(deleteButton);
+
+    return tableRow;
   };
 
   const deleteUser = async (id) => {
@@ -104,7 +129,7 @@
 
       deleteTableRow(id);
     } catch {
-      alert("Não foi possível deletar");
+      showError("Não foi possível deletar");
     }
   };
 
@@ -115,11 +140,7 @@
 
   const editUser = async (id) => {
     try {
-      const name = window.prompt("Mudar nome:");
-      const email = window.prompt("Mudar email:");
-      const gender = window.prompt("Mudar gênero:");
-
-      const editedUser = { email, gender, name };
+      const editedUser = body;
 
       const response = await fetch(
         `https://gorest.co.in/public/v2/users/${id}`,
@@ -138,7 +159,7 @@
       editTableRow(data);
       return data;
     } catch {
-      alert("Erro ao editar usuário");
+      showError("Erro ao editar usuário");
     }
   };
 
@@ -147,6 +168,55 @@
     tableRow[1].innerHTML = user.name;
     tableRow[2].innerHTML = user.email;
   };
+
+  const openModal = (title, id) => {
+    modal.classList.add("active");
+    hideError();
+    const modalTitle = document.querySelector(".modal-title");
+    if (id) {
+      modalTitle.innerHTML = `${title}: <span class="id-user">${id}</span>`;
+    } else {
+      modalTitle.innerText = `${title}`;
+    }
+  };
+
+  const closeModal = (e) => {
+    e.preventDefault();
+    modal.classList.remove("active");
+    const name = document.querySelector("#name");
+    const email = document.querySelector("#email");
+
+    const gender = document.querySelector('input[name="gender"]:checked');
+    const status = document.querySelector('input[name="status"]:checked');
+    name.value = "";
+    email.value = "";
+    if (gender && status) {
+      gender.checked = false;
+      status.checked = false;
+    }
+  };
+
+  const closeButton = document.querySelector(".close-modal-button");
+  closeButton.addEventListener("click", (e) => {
+    closeModal(e);
+  });
+
+  const showError = (err) => {
+    const elementError = document.querySelector(".alert-error");
+    elementError.innerHTML = `<span>${err}</span>`;
+    elementError.classList.remove("inactive");
+  };
+
+  const hideError = () => {
+    const elementError = document.querySelector(".alert-error");
+    elementError.classList.add("inactive");
+  };
+
+  modal.addEventListener("click", (e) => {
+    if (e.target === modal) {
+      closeModal(e);
+    }
+  });
 
   showUsers();
 })();

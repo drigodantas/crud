@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Prova prática</title>
+    <title>Teste prático</title>
     <link rel="stylesheet" href="style/style.css" />
   </head>
   <body>
@@ -17,6 +17,10 @@
       />
     </form>
 
+    <div class="alert-error inactive">
+      <span></span>
+    </div>
+
     <table class="users-table">
       <tr>
         <th>ID</th>
@@ -25,6 +29,48 @@
         <th>AÇÕES</th>
       </tr>
     </table>
+
+    <div class="modal">
+      <div class="modal-content">
+        <h2 class="modal-title"></h2>
+        <button class="close-modal-button">X</button>
+
+        <hr />
+        <form class="modal-form">
+          <label for="name">Nome:</label>
+          <input type="text" name="name" id="name" />
+          <label for="email">Email:</label>
+          <input type="text" name="email" id="email" />
+
+          <div class="radio-button-gender">
+            <label for="gender">Gênero:</label>
+            <div class="wrapped">
+              <input type="radio" id="male" name="gender" value="male" />
+              <label for="male">Masculino</label></div>
+              <div class="wrapped">
+              <input type="radio" id="female" name="gender" value="female" />
+              <label for="female">Feminino</label>
+            </div>
+          <div class="radio-button-status">
+            <label for="status">Status:</label>
+            <div class="wrapped">
+              <input type="radio" id="active" name="status" value="active" />
+              <label for="status">Active</label>
+            </div>
+            <div class="wrapped">
+              <input
+                type="radio"
+                id="inactive"
+                name="status"
+                value="inactive"
+              />
+              <label for="status">Inactive</label>
+            </div>
+          </div>
+          <button class="sendButton">Enviar</button>
+        </form>
+      </div>
+    </div>
 
     <script src="js/script.js"></script>
   </body>
